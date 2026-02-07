@@ -1,0 +1,22 @@
+package com.project1.demo.service;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.project1.demo.dto.ItemRequestDTO;
+import com.project1.demo.entity.Item;
+import com.project1.demo.enums.ItemType;
+
+
+public interface ItemService {
+	Item createItem(ItemRequestDTO dto);
+
+	Page<Item> getActiveItems(ItemType type, Pageable pageable);
+
+    void closeItem(Long id);
+    
+    Page<Item> searchItems(String keyword, Pageable pageable);
+
+}
