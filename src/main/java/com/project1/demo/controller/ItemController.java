@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
 import com.project1.demo.dto.ItemRequestDTO;
 import com.project1.demo.entity.Item;
@@ -46,7 +48,7 @@ public class ItemController {
 	
 	@GetMapping("/search")
 	public Page<Item> searchItems(
-	        @RequestParam String keyword,
+	        @RequestParam(required=false,defaultValue="") String keyword,
 	        @RequestParam(defaultValue = "0") int page,
 	        @RequestParam(defaultValue = "10") int size
 	) {
@@ -54,10 +56,22 @@ public class ItemController {
 	    return service.searchItems(keyword, pageable);
 	}
 
-	
-	@PutMapping("/{id}/close")
-	public void closeItem(@PathVariable Long id)
-	{
-		service.closeItem(id);
+	@GetMapping("/items/search/location")
+	public Page<Item> searchByLocation(
+	        @RequestParam String location,
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "10") int size
+	) {
+	    return service.searchActiveItemsByLocation(location, page, size);
 	}
+	
+	
+	@PatchMapping("/items/{id}/close")
+	public ResponseEntity<String> closeItem(
+	        @PathVariable Long id,
+	        @RequestParam String user) {
+	    service.closeItem(id, user);
+	    return ResponseEntity.ok("Item closed successfully");
+	}
+
 }

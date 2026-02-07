@@ -25,12 +25,23 @@ public class ItemRequestDTO {
         message = "Contact number must be a valid Indian mobile number"
     )
     private String contactNumber;
+    
+    @NotBlank(message="CreatedBy is required")
+    private String createdBy;
 
     @NotNull(message = "Item type is required")
     private ItemType type;
 
 	public String getItemName() {
 		return itemName;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String CreatedBy) {
+		createdBy = CreatedBy;
 	}
 
 	public void setItemName(String itemName) {

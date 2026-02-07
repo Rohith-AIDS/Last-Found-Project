@@ -26,6 +26,16 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 			    Pageable pageable
 			);
 	
+	@Query("""
+		       SELECT i FROM Item i
+		       WHERE i.status = 'ACTIVE'
+		       AND LOWER(i.location) LIKE LOWER(CONCAT('%', :location, '%'))
+		       """)
+		Page<Item> searchActiveItemsByLocation(
+		        @Param("location") String location,
+		        Pageable pageable
+		);
+	
 }
 
 

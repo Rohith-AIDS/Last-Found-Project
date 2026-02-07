@@ -15,8 +15,13 @@ public interface ItemService {
 
 	Page<Item> getActiveItems(ItemType type, Pageable pageable);
 
-    void closeItem(Long id);
+    void closeItem(Long id,String user);
     
     Page<Item> searchItems(String keyword, Pageable pageable);
-
+    
+    Page<Item> searchActiveItemsByLocation(
+            String location,
+            int page,
+            int size
+    );
 }

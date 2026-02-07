@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,16 @@ public class Item {
 	private String location;
 	private String contactNumber;
 	
+	@NotBlank
+	private String createdBy;
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String CreatedBy) {
+		createdBy = CreatedBy;
+	}
+
 	@Enumerated(EnumType.STRING)
 	private ItemType type;
 	
