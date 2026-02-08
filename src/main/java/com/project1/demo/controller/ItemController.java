@@ -17,8 +17,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import com.project1.demo.dto.ItemRequestDTO;
+import com.project1.demo.dto.ItemResponseDTO;
 import com.project1.demo.entity.Item;
 import com.project1.demo.enums.ItemType;
+import com.project1.demo.mapper.ItemMapper;
 import com.project1.demo.service.ItemService;
 
 import jakarta.validation.Valid;
@@ -26,52 +28,61 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/items")
 public class ItemController {
-	private final ItemService service;
-	
-	public ItemController(ItemService service)
-	{
-		this.service=service;
-	}
-	@PostMapping
-	public Item createItem(@Valid @RequestBody ItemRequestDTO dto)
-	{
-		return service.createItem(dto);
-	}
-	
-	@GetMapping
-	public Page<Item> getItems(@RequestParam ItemType type,@RequestParam(defaultValue = "0") int page,
-	        @RequestParam(defaultValue = "10") int size)
-	{
-		Pageable pageable= PageRequest.of(page, size);
-		return service.getActiveItems(type,pageable);
-	}
-	
-	@GetMapping("/search")
-	public Page<Item> searchItems(
-	        @RequestParam(required=false,defaultValue="") String keyword,
-	        @RequestParam(defaultValue = "0") int page,
-	        @RequestParam(defaultValue = "10") int size
-	) {
-	    Pageable pageable = PageRequest.of(page, size);
-	    return service.searchItems(keyword, pageable);
-	}
 
-	@GetMapping("/items/search/location")
-	public Page<Item> searchByLocation(
-	        @RequestParam String location,
-	        @RequestParam(defaultValue = "0") int page,
-	        @RequestParam(defaultValue = "10") int size
-	) {
-	    return service.searchActiveItemsByLocation(location, page, size);
-	}
-	
-	
-	@PatchMapping("/items/{id}/close")
-	public ResponseEntity<String> closeItem(
-	        @PathVariable Long id,
-	        @RequestParam String user) {
-	    service.closeItem(id, user);
-	    return ResponseEntity.ok("Item closed successfully");
-	}
+    private final ItemService service;
 
+    public ItemController(ItemService service) {
+        this.service = service;
+    }
+
+    // CREATE (internal use / admin)
+    @PostMapping
+    public ItemResponseDTO createItem(@Valid @RequestBody ItemRequestDTO dto) {
+        return ItemMapper.toDto(service.createItem(dto));
+    }
+
+    // FILTER BY TYPE (ACTIVE)
+    @GetMapping
+    public Page<ItemResponseDTO> getItems(
+            @RequestParam ItemType type,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return service.getActiveItems(type, pageable)
+                .map(ItemMapper::toDto);
+    }
+
+    // SEARCH BY KEYWORD
+    @GetMapping("/search")
+    public Page<ItemResponseDTO> searchItems(
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return service.searchItems(keyword, pageable)
+                .map(ItemMapper::toDto);
+    }
+
+    // SEARCH BY LOCATION
+    @GetMapping("/search/location")
+    public Page<ItemResponseDTO> searchByLocation(
+            @RequestParam String location,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return service.searchActiveItemsByLocation(location, page, size)
+                .map(ItemMapper::toDto);
+    }
+
+    // CLOSE ITEM
+    @PatchMapping("/{id}/close")
+    public ResponseEntity<String> closeItem(
+            @PathVariable Long id,
+            @RequestParam String user
+    ) {
+        service.closeItem(id, user);
+        return ResponseEntity.ok("Item closed successfully");
+    }
 }
