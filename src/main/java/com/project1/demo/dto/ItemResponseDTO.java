@@ -1,5 +1,7 @@
 package com.project1.demo.dto;
 
+import java.time.LocalDateTime;
+
 import com.project1.demo.enums.ItemStatus;
 import com.project1.demo.enums.ItemType;
 
@@ -7,6 +9,8 @@ public class ItemResponseDTO {
 
     private Long id;
     private String itemName;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private String description;
     private String location;
     private ItemType type;
@@ -18,7 +22,23 @@ public class ItemResponseDTO {
         return id;
     }
 
-    public void setId(Long id) {
+    public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public void setId(Long id) {
         this.id = id;
     }
 

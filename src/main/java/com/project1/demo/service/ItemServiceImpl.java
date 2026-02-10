@@ -49,10 +49,9 @@ public class ItemServiceImpl implements ItemService{
 	    return repository.searchActiveItems(keyword, pageable);
 	}
 	
-	public Page<Item> searchActiveItemsByLocation(String location,int page,int size)
+	public Page<Item> searchActiveItemsByLocation(String location,Pageable pageable)
 	{
-		return repository.searchActiveItemsByLocation(location,
-				PageRequest.of(page, size));
+		return repository.searchActiveItemsByLocation(location,pageable);
 	}
 	
 	public void closeItem(Long id, String user) {

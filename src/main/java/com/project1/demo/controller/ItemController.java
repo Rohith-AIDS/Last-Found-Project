@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
 import com.project1.demo.dto.ItemRequestDTO;
@@ -30,7 +31,7 @@ import jakarta.validation.Valid;
 public class ItemController {
 
     private final ItemService service;
-
+    
     public ItemController(ItemService service) {
         this.service = service;
     }
@@ -40,15 +41,20 @@ public class ItemController {
     public ItemResponseDTO createItem(@Valid @RequestBody ItemRequestDTO dto) {
         return ItemMapper.toDto(service.createItem(dto));
     }
-
+    
+    
     // FILTER BY TYPE (ACTIVE)
     @GetMapping
     public Page<ItemResponseDTO> getItems(
             @RequestParam ItemType type,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String dir
     ) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size,dir.equalsIgnoreCase("asc")?
+        																Sort.by(sortBy).ascending():
+        																	Sort.by(sortBy).descending());
         return service.getActiveItems(type, pageable)
                 .map(ItemMapper::toDto);
     }
@@ -58,9 +64,13 @@ public class ItemController {
     public Page<ItemResponseDTO> searchItems(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id")String SortBy,
+            @RequestParam(defaultValue = "asc")String dir
     ) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, dir.equalsIgnoreCase("asc")?
+        																Sort.by(SortBy).ascending():
+        																	Sort.by(SortBy).descending());
         return service.searchItems(keyword, pageable)
                 .map(ItemMapper::toDto);
     }
@@ -70,10 +80,16 @@ public class ItemController {
     public Page<ItemResponseDTO> searchByLocation(
             @RequestParam String location,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String dir
+            
     ) {
-        return service.searchActiveItemsByLocation(location, page, size)
-                .map(ItemMapper::toDto);
+    	Pageable pageable = PageRequest.of(page, size, dir.equalsIgnoreCase("asc")?
+																		Sort.by(sortBy).ascending():
+																				Sort.by(sortBy).descending());
+			return service.searchActiveItemsByLocation(location, pageable)
+			.map(ItemMapper::toDto);
     }
 
     // CLOSE ITEM

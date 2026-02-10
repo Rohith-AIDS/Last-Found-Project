@@ -27,6 +27,9 @@ public class ItemMapper {
         } else {
             dto.setContactNumber(null);
         }
+        
+        dto.setCreatedAt(item.getCreatedAt());
+        dto.setUpdatedAt(item.getUpdatedAt());
 
         return dto;
     }

@@ -21,7 +21,6 @@ public interface ItemService {
     
     Page<Item> searchActiveItemsByLocation(
             String location,
-            int page,
-            int size
+            Pageable pageable
     );
 }

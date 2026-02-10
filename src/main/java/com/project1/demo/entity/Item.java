@@ -1,9 +1,17 @@
 package com.project1.demo.entity;
 
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import com.project1.demo.enums.ItemStatus;
 import com.project1.demo.enums.ItemType;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +28,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Item {
 	
 	@Id
@@ -29,6 +38,13 @@ public class Item {
 	private String description;
 	private String location;
 	private String contactNumber;
+	
+	@CreatedDate
+	@Column(updatable=false)
+	private LocalDateTime createdAt;
+	
+	@LastModifiedDate
+	private LocalDateTime updatedAt;
 	
 	@NotBlank
 	private String createdBy;
@@ -60,6 +76,22 @@ public class Item {
 
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public String getDescription() {
