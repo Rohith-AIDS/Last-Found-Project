@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.project1.demo.dto.ItemRequestDTO;
+import com.project1.demo.dto.ItemUpdateDTO;
 import com.project1.demo.entity.Item;
 import com.project1.demo.enums.ItemType;
 
@@ -23,4 +24,7 @@ public interface ItemService {
             String location,
             Pageable pageable
     );
+    void deleteItem(Long id, String user);
+    
+    Item updatedItem(Long id,ItemUpdateDTO dto, String user);
 }

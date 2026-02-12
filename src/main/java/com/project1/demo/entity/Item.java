@@ -51,6 +51,16 @@ public class Item {
 	public String getCreatedBy() {
 		return createdBy;
 	}
+	
+	private boolean deleted=false;
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
 
 	public void setCreatedBy(String CreatedBy) {
 		createdBy = CreatedBy;

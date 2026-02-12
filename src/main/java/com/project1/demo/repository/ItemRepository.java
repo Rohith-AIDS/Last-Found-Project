@@ -14,10 +14,11 @@ import com.project1.demo.enums.ItemType;
 
 public interface ItemRepository extends JpaRepository<Item,Long> {
 	
-	Page<Item> findByTypeAndStatus(ItemType type,ItemStatus status,Pageable pageable);
+	Page<Item> findByTypeAndStatusAndDeletedFalse(ItemType type,ItemStatus status,Pageable pageable);
 	@Query("""
 			   SELECT i FROM Item i
 			   WHERE i.status = 'ACTIVE'
+			   AND i.deleted = false
 			   AND (LOWER(i.itemName) LIKE LOWER(CONCAT('%', :keyword, '%'))
 			   OR LOWER(i.description) LIKE LOWER(CONCAT('%', :keyword, '%')))
 			""")
@@ -29,6 +30,7 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 	@Query("""
 		       SELECT i FROM Item i
 		       WHERE i.status = 'ACTIVE'
+		       AND i.deleted = false
 		       AND LOWER(i.location) LIKE LOWER(CONCAT('%', :location, '%'))
 		       """)
 		Page<Item> searchActiveItemsByLocation(

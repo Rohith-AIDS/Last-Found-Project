@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.project1.demo.dto.ItemRequestDTO;
+import com.project1.demo.dto.ItemUpdateDTO;
 import com.project1.demo.entity.Item;
 import com.project1.demo.enums.ItemStatus;
 import com.project1.demo.enums.ItemType;
@@ -41,7 +42,7 @@ public class ItemServiceImpl implements ItemService{
 	
 	public Page<Item> getActiveItems(ItemType type, Pageable pageable)
 	{
-		return repository.findByTypeAndStatus(type, ItemStatus.ACTIVE, pageable);
+		return repository.findByTypeAndStatusAndDeletedFalse(type, ItemStatus.ACTIVE, pageable);
 	}
 	
 	@Override
@@ -70,7 +71,7 @@ public class ItemServiceImpl implements ItemService{
 	    repository.save(item);
 	}
 
-	public Item updatedItem(Long id,Item updatedItem)
+	public Item updatedItem(Long id,ItemUpdateDTO dto, String user)
 	{
 		Item item=repository.findById(id).orElseThrow(()->new ResourceNotFoundException("Item not found"));
 	
@@ -80,11 +81,31 @@ public class ItemServiceImpl implements ItemService{
 		throw new BadRequestException("Closed items cannot be updated");
 	}
 	
-	item.setItemName(updatedItem.getItemName());
-    item.setDescription(updatedItem.getDescription());
-    item.setLocation(updatedItem.getLocation());
-    item.setContactNumber(updatedItem.getContactNumber());
+	if (item.isDeleted()) {
+        throw new BadRequestException("Deleted item cannot be updated");
+    }
+	
+	if (!item.getCreatedBy().equals(user)) {
+        throw new ForbiddenException("You are not allowed to update this item");
+    }
+	
+	item.setItemName(dto.getItemName());
+    item.setDescription(dto.getDescription());
+    item.setLocation(dto.getLocation());
+    item.setContactNumber(dto.getContactNumber());
 
     return repository.save(item);
+	}
+	
+	public void deleteItem(Long id, String user) {
+	    Item item = repository.findById(id)
+	            .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
+
+	    if (!item.getCreatedBy().equals(user)) {
+	        throw new ForbiddenException("You are not allowed to delete this item");
+	    }
+
+	    item.setDeleted(true);
+	    repository.save(item);
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.project1.demo.dto.ItemRequestDTO;
 import com.project1.demo.dto.ItemResponseDTO;
+import com.project1.demo.dto.ItemUpdateDTO;
 import com.project1.demo.entity.Item;
 import com.project1.demo.enums.ItemType;
 import com.project1.demo.mapper.ItemMapper;
@@ -100,5 +102,24 @@ public class ItemController {
     ) {
         service.closeItem(id, user);
         return ResponseEntity.ok("Item closed successfully");
+    }
+    
+    @PutMapping("/{id}")
+    public ItemResponseDTO updateItem(@PathVariable Long id, @RequestParam String user,@RequestBody ItemUpdateDTO dto)
+    {
+    	return ItemMapper.toDto(service.updatedItem(id,dto,user));
+    }
+    
+    
+    
+    
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteItem(
+            @PathVariable Long id,
+            @RequestParam String user
+    ) {
+        service.deleteItem(id, user);
+        return ResponseEntity.ok("Item deleted successfully");
     }
 }
