@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -98,7 +99,7 @@ public class ItemController {
     @PatchMapping("/{id}/close")
     public ResponseEntity<String> closeItem(
             @PathVariable Long id,
-            @RequestParam String user
+            @RequestHeader("X-USER") String user
     ) {
         service.closeItem(id, user);
         return ResponseEntity.ok("Item closed successfully");
