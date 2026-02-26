@@ -7,4 +7,8 @@ public class AuthResponseDTO {
 	{
 		this.token=token;
 		}
+
+	public String getToken() {
+		return token;
+	}
 }
