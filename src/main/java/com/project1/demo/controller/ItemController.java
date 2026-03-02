@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.project1.demo.dto.ItemRequestDTO;
 import com.project1.demo.dto.ItemResponseDTO;
@@ -114,7 +115,7 @@ public class ItemController {
     
     
     
-    
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteItem(
             @PathVariable Long id,

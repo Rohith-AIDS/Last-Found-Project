@@ -2,6 +2,7 @@ package com.project1.demo.security;
 
 import java.util.Date;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
@@ -12,10 +13,11 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
 	private final String SECRET="mysecretkeymysecretkeymysecretkey";
 	
-	public String generateToken(String username)
+	public String generateToken(UserDetails userDetails)
 	{
 		return Jwts.builder()
-				.setSubject(username)
+				.setSubject(userDetails.getUsername())
+				.claim("roles", userDetails.getAuthorities())
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis()+1000*60*60))
 				.signWith(Keys.hmacShaKeyFor(SECRET.getBytes()),SignatureAlgorithm.HS256)

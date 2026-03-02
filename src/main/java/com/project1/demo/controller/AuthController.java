@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,9 @@ public class AuthController {
 	@Autowired
 	private JwtUtil jwtUtil;
 	
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO request)
 	{
@@ -31,7 +36,9 @@ public class AuthController {
 				
 				);
 		
-		String token = jwtUtil.generateToken(request.getUsername());
+		UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+		
+		String token = jwtUtil.generateToken(userDetails);
 		
 		return ResponseEntity.ok(new AuthResponseDTO(token));
 	}
