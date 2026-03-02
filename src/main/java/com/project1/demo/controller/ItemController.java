@@ -19,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.project1.demo.dto.ItemRequestDTO;
 import com.project1.demo.dto.ItemResponseDTO;
@@ -43,7 +45,10 @@ public class ItemController {
     // CREATE (internal use / admin)
     @PostMapping
     public ItemResponseDTO createItem(@Valid @RequestBody ItemRequestDTO dto) {
-        return ItemMapper.toDto(service.createItem(dto));
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    	String username =authentication.getName();
+    	dto.setCreatedBy(username);
+        return ItemMapper.toDto(service.createItem(dto)); 
     }
     
     
