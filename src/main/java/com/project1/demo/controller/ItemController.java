@@ -120,13 +120,11 @@ public class ItemController {
     
     
     
-    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteItem(
-            @PathVariable Long id,
-            @RequestParam String user
+            @PathVariable Long id
     ) {
-        service.deleteItem(id, user);
+        service.deleteItem(id);
         return ResponseEntity.ok("Item deleted successfully");
     }
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.project1.demo.dto.ItemRequestDTO;
@@ -97,11 +99,18 @@ public class ItemServiceImpl implements ItemService{
     return repository.save(item);
 	}
 	
-	public void deleteItem(Long id, String user) {
+	public void deleteItem(Long id) {
 	    Item item = repository.findById(id)
 	            .orElseThrow(() -> new ResourceNotFoundException("Item not found"));
 
-	    if (!item.getCreatedBy().equals(user)) {
+	    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    	
+	    	String username= auth.getName();
+	    	
+	    	boolean isAdmin= auth.getAuthorities().stream()
+	    			.anyMatch(role->role.getAuthority().equals("ROLE_ADMIN"));
+	    	
+	    if (!isAdmin && !item.getCreatedBy().equals(username)) {
 	        throw new ForbiddenException("You are not allowed to delete this item");
 	    }
 

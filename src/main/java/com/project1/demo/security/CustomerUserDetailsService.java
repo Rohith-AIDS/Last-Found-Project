@@ -16,6 +16,11 @@ public class CustomerUserDetailsService implements UserDetailsService {
 			.roles("USER")
 			.build(),
 			
+			User.withUsername("guna")
+			.password("{noop}1234")
+			.roles("USER")
+			.build(),
+			
 			User.withUsername("admin")
 			.password("{noop}1234")
 			.roles("ADMIN")

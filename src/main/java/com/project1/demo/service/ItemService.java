@@ -24,7 +24,7 @@ public interface ItemService {
             String location,
             Pageable pageable
     );
-    void deleteItem(Long id, String user);
+    void deleteItem(Long id);
     
     Item updatedItem(Long id,ItemUpdateDTO dto, String user);
 }
