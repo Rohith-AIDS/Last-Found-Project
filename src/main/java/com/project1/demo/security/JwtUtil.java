@@ -24,6 +24,15 @@ public class JwtUtil {
 				.compact();
 	}
 	
+	public String generateRefreshToken(UserDetails userDetails) {
+	    return Jwts.builder()
+	            .setSubject(userDetails.getUsername())
+	            .setIssuedAt(new Date())
+	            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 7 days
+	            .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()), SignatureAlgorithm.HS256)
+	            .compact();
+	}
+	
 	public String extractUserName(String token)
 	{
 		return Jwts.parserBuilder()

@@ -117,9 +117,6 @@ public class ItemController {
     	return ItemMapper.toDto(service.updatedItem(id,dto,user));
     }
     
-    
-    
-    
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteItem(
             @PathVariable Long id

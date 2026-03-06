@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project1.demo.dto.AuthRequestDTO;
 import com.project1.demo.dto.AuthResponseDTO;
+import com.project1.demo.dto.RefreshRequestDTO;
+import com.project1.demo.exception.ForbiddenException;
 import com.project1.demo.security.JwtUtil;
 
 @RestController
@@ -38,8 +40,31 @@ public class AuthController {
 		
 		UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
 		
-		String token = jwtUtil.generateToken(userDetails);
+		String accessToken = jwtUtil.generateToken(userDetails);
 		
-		return ResponseEntity.ok(new AuthResponseDTO(token));
+		String refreshToken = jwtUtil.generateRefreshToken(userDetails);
+
+		
+		
+		return ResponseEntity.ok(new AuthResponseDTO(accessToken,refreshToken));
+	}
+	
+	@PostMapping("/refresh")
+	public ResponseEntity<AuthResponseDTO> refreshToken(@RequestBody RefreshRequestDTO request)
+	{
+		String username=jwtUtil.extractUserName(request.getRefreshToken());
+		
+		UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+		
+		if(!jwtUtil.validateToken(request.getRefreshToken()))
+		{
+			throw new ForbiddenException("Invalid refresh token");
+		}
+		
+		String newAccessToken = jwtUtil.generateToken(userDetails);
+		
+		return ResponseEntity.ok(
+				new AuthResponseDTO(newAccessToken,request.getRefreshToken())
+				);
 	}
 }
