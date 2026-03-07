@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project1.demo.dto.AuthRequestDTO;
 import com.project1.demo.dto.AuthResponseDTO;
 import com.project1.demo.dto.RefreshRequestDTO;
+import com.project1.demo.dto.RegisterRequestDTO;
 import com.project1.demo.exception.ForbiddenException;
 import com.project1.demo.security.JwtUtil;
+import com.project1.demo.service.UserService;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,6 +31,9 @@ public class AuthController {
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthRequestDTO request)
@@ -66,5 +71,13 @@ public class AuthController {
 		return ResponseEntity.ok(
 				new AuthResponseDTO(newAccessToken,request.getRefreshToken())
 				);
+	}
+	
+	@PostMapping("/register")
+	public ResponseEntity<String> register(@RequestBody RegisterRequestDTO request)
+	{
+		userService.register(request);
+		
+		return ResponseEntity.ok("User registered successfully");
 	}
 }
