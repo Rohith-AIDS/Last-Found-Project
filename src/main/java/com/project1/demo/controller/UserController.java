@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project1.demo.entity.User;
-rg.springframework.web.bind.annotation.RestController;
 
 import com.project1.demo.repository.UserRepository;
 
