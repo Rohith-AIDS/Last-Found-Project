@@ -117,4 +117,18 @@ public class ItemServiceImpl implements ItemService{
 	    item.setDeleted(true);
 	    repository.save(item);
 	}
+	
+	public void restoreItem(Long id)
+	{
+		Item item= repository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Item not found"));
+		
+		if(!item.isDeleted())
+		{
+			throw new BadRequestException("Item is not deleted");
+		}
+		
+		item.setDeleted(false);
+		
+		repository.save(item);
+	}
 }

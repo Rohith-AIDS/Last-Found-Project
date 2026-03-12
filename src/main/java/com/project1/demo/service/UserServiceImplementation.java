@@ -27,7 +27,6 @@ public class UserServiceImplementation  implements UserService{
 		user.setUsername(request.getUsername());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setRole("USER");
-		
 		return repository.save(user);
 	}
 }

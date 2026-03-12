@@ -27,4 +27,6 @@ public interface ItemService {
     void deleteItem(Long id);
     
     Item updatedItem(Long id,ItemUpdateDTO dto, String user);
+    
+    void restoreItem(Long id);
 }

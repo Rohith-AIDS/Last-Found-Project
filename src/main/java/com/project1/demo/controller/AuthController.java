@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +16,13 @@ import com.project1.demo.dto.AuthRequestDTO;
 import com.project1.demo.dto.AuthResponseDTO;
 import com.project1.demo.dto.RefreshRequestDTO;
 import com.project1.demo.dto.RegisterRequestDTO;
+import com.project1.demo.entity.User;
 import com.project1.demo.exception.ForbiddenException;
+import com.project1.demo.repository.UserRepository;
 import com.project1.demo.security.JwtUtil;
 import com.project1.demo.service.UserService;
+
+import jakarta.annotation.PostConstruct;
 
 @RestController
 @RequestMapping("/auth")
@@ -25,6 +30,12 @@ public class AuthController {
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private UserRepository repository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private JwtUtil jwtUtil;
@@ -79,5 +90,17 @@ public class AuthController {
 		userService.register(request);
 		
 		return ResponseEntity.ok("User registered successfully");
+	}
+	@PostConstruct
+	public void createAdmin() {
+	    if(repository.findByUsername("admin").isEmpty()){
+
+	        User admin = new User();
+	        admin.setUsername("admin");
+	        admin.setPassword(passwordEncoder.encode("admin123"));
+	        admin.setRole("ADMIN");
+
+	        repository.save(admin);
+	    }
 	}
 }
