@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project1.demo.dto.ChangePasswordDTO;
 import com.project1.demo.dto.RegisterRequestDTO;
 import com.project1.demo.dto.UpdateProfileDTO;
 import com.project1.demo.dto.UserResponseDTO;
@@ -39,22 +40,42 @@ public class UserServiceImplementation  implements UserService{
 		return repository.save(user);
 	}
 	
-	public UserResponseDTO updateProfile(UpdateProfileDTO dto, String currentUsername)
-	{
-		User user= repository.findByUsername(currentUsername).orElseThrow(()-> new ResourceNotFoundException("User not found"));
-		
-		if(!user.getUsername().equals(dto.getUsername())&& repository.existsByUsername(dto.getUsername()))
-{
-	throw new BadRequestException("Username already taken");
-}
-user.setUsername(dto.getUsername());
-user.setEmail(dto.getEmail());
-user.setPhone(dto.getPhone());
+	
+	public UserResponseDTO updateProfile(UpdateProfileDTO dto, String currentUsername) {
+		User user = repository.findByUsername(currentUsername)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-User updatedUser = repository.save(user);
+		if (!user.getUsername().equals(dto.getUsername()) && repository.existsByUsername(dto.getUsername())) {
+			throw new BadRequestException("Username already taken");
+		}
+		user.setUsername(dto.getUsername());
+		user.setEmail(dto.getEmail());
+		user.setPhone(dto.getPhone());
 
-return userMapper.toDTO(updatedUser);
+		User updatedUser = repository.save(user);
+
+		return userMapper.toDTO(updatedUser);
+	}
+	
+	public void changePassword(ChangePasswordDTO dto, String username) {
+
+	    User user = repository.findByUsername(username)
+	            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+	    // 🔐 Check old password
+	    if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+	        throw new BadRequestException("Old password is incorrect");
+	    }
+
+	    // ⚠️ Prevent same password
+	    if (dto.getOldPassword().equals(dto.getNewPassword())) {
+	        throw new BadRequestException("New password cannot be same as old password");
+	    }
+
+	    // 🔐 Encode new password
+	    user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+
+	    repository.save(user);
 	}
 }
-
 
