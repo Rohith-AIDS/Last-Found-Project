@@ -2,31 +2,41 @@ package com.project1.demo.service;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.project1.demo.dto.ChangePasswordDTO;
+import com.project1.demo.dto.ItemResponseDTO;
 import com.project1.demo.dto.RegisterRequestDTO;
 import com.project1.demo.dto.UpdateProfileDTO;
 import com.project1.demo.dto.UserResponseDTO;
 import com.project1.demo.entity.User;
 import com.project1.demo.exception.BadRequestException;
 import com.project1.demo.exception.ResourceNotFoundException;
+import com.project1.demo.mapper.ItemMapper;
 import com.project1.demo.mapper.UserMapper;
+import com.project1.demo.repository.ItemRepository;
 import com.project1.demo.repository.UserRepository;
 
 @Service
 public class UserServiceImplementation  implements UserService{
 	
 	private final UserRepository repository;
+	private final ItemRepository itemRepository;
 	private final PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private UserMapper userMapper;
 	
-	public UserServiceImplementation(UserRepository repository, PasswordEncoder passwordEncoder)
+	@Autowired
+	private ItemMapper itemMapper;
+	
+	public UserServiceImplementation(UserRepository repository, PasswordEncoder passwordEncoder, ItemRepository itemRepository)
 	{
 		this.repository=repository;
+		this.itemRepository=itemRepository;
 		this.passwordEncoder=passwordEncoder;
 	}
 	
@@ -76,6 +86,15 @@ public class UserServiceImplementation  implements UserService{
 	    user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
 
 	    repository.save(user);
+	}
+	
+	public Page<ItemResponseDTO> getMyItems(String username, Pageable pageable) {
+
+	    User user = repository.findByUsername(username)
+	            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+	    return itemRepository.findByUser(user, pageable)
+	            .map(ItemMapper::toDTO);
 	}
 }
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project1.demo.dto.ChangePasswordDTO;
+import com.project1.demo.dto.ItemResponseDTO;
 import com.project1.demo.dto.UpdateProfileDTO;
 import com.project1.demo.dto.UserResponseDTO;
 import com.project1.demo.entity.User;
@@ -17,6 +18,9 @@ import com.project1.demo.repository.UserRepository;
 import com.project1.demo.service.UserService;
 
 import jakarta.validation.Valid;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 public class UserController {
@@ -57,5 +61,17 @@ public class UserController {
 	    userService.changePassword(dto, username);
 
 	    return ResponseEntity.ok("Password updated successfully");
+	}
+	
+	@GetMapping("/me/items")
+	public ResponseEntity<Page<ItemResponseDTO>> getMyItems(
+	        Pageable pageable,
+	        Authentication authentication) {
+
+	    String username = authentication.getName();
+
+	    Page<ItemResponseDTO> items = userService.getMyItems(username, pageable);
+
+	    return ResponseEntity.ok(items);
 	}
 }

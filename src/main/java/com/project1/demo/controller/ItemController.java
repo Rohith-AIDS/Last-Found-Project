@@ -48,7 +48,7 @@ public class ItemController {
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     	String username =authentication.getName();
     	dto.setCreatedBy(username);
-        return ItemMapper.toDto(service.createItem(dto)); 
+        return ItemMapper.toDTO(service.createItem(dto)); 
     }
     
     
@@ -65,7 +65,7 @@ public class ItemController {
         																Sort.by(sortBy).ascending():
         																	Sort.by(sortBy).descending());
         return service.getActiveItems(type, pageable)
-                .map(ItemMapper::toDto);
+                .map(ItemMapper::toDTO);
     }
 
     // SEARCH BY KEYWORD
@@ -81,7 +81,7 @@ public class ItemController {
         																Sort.by(SortBy).ascending():
         																	Sort.by(SortBy).descending());
         return service.searchItems(keyword, pageable)
-                .map(ItemMapper::toDto);
+                .map(ItemMapper::toDTO);
     }
 
     // SEARCH BY LOCATION
@@ -98,7 +98,7 @@ public class ItemController {
 																		Sort.by(sortBy).ascending():
 																				Sort.by(sortBy).descending());
 			return service.searchActiveItemsByLocation(location, pageable)
-			.map(ItemMapper::toDto);
+			.map(ItemMapper::toDTO);
     }
 
     // CLOSE ITEM
@@ -114,7 +114,7 @@ public class ItemController {
     @PutMapping("/{id}")
     public ItemResponseDTO updateItem(@PathVariable Long id, @RequestParam String user,@RequestBody ItemUpdateDTO dto)
     {
-    	return ItemMapper.toDto(service.updatedItem(id,dto,user));
+    	return ItemMapper.toDTO(service.updatedItem(id,dto,user));
     }
     
     @DeleteMapping("/{id}")

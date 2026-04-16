@@ -1,16 +1,19 @@
 package com.project1.demo.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.project1.demo.dto.ItemResponseDTO;
 import com.project1.demo.entity.Item;
 import com.project1.demo.enums.ItemStatus;
 
+@Component
 public class ItemMapper {
 
     private ItemMapper() {
         // prevent object creation
     }
 
-    public static ItemResponseDTO toDto(Item item) {
+    public static ItemResponseDTO toDTO(Item item) {
 
         ItemResponseDTO dto = new ItemResponseDTO();
 

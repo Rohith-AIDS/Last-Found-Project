@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.project1.demo.entity.Item;
+import com.project1.demo.entity.User;
 import com.project1.demo.enums.ItemStatus;
 import com.project1.demo.enums.ItemType;
 
@@ -37,6 +38,9 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
 		        @Param("location") String location,
 		        Pageable pageable
 		);
+	
+	Page<Item> findByUser(User user, Pageable pageable);
+
 	
 }
 
